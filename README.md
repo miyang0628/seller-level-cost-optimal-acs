@@ -1,5 +1,10 @@
 # Cost-Optimal Seller Segment Assignment for Alternative Credit Scoring
 
+> **Anonymised for double-blind review.** This is the anonymised replication
+> repository accompanying a manuscript under review. Author, affiliation, and
+> antecedent-citation details are withheld and will be restored on acceptance.
+> Anonymous mirror: `https://anonymous.4open.science/r/seller-level-cost-optimal-acs-0634`
+
 Simulation code, derived results, and manuscript sources for a study on
 **seller-level segment assignment** and **cost-optimal routing thresholds**
 in alternative credit scoring (ACS).
@@ -85,7 +90,8 @@ properties of the framework rather than of any one classifier.
 │   ├── 03_tau_optimization.ipynb       # cost-optimal τ*, FOC, vs 80% rule
 │   ├── 04_inclusion_risk_tradeoff.ipynb# inclusion–risk frontier, market scenarios
 │   ├── 05_figures.ipynb                # all result figures (grayscale, 600 dpi)
-│   └── 06_robustness.ipynb             # multi-backend RQ1 robustness
+│   ├── 06_robustness.ipynb             # multi-backend RQ1 robustness
+│   └── 07_robustness_and_cost_extensions.ipynb  # directional cost, fair baselines, CIs
 ├── results/
 │   ├── tables/               # all derived result tables (.csv)
 │   └── figures/              # result figures (.png and .pdf)
@@ -137,7 +143,7 @@ GPU; `01`–`06` run on CPU in a few minutes.
 cd notebooks
 for nb in 00_data_prep_classifier 01_seller_simulation 02_seller_scs \
           03_tau_optimization 04_inclusion_risk_tradeoff 05_figures \
-          06_robustness; do
+          06_robustness 07_robustness_and_cost_extensions; do
   jupyter nbconvert --to notebook --execute --inplace ${nb}.ipynb \
           --ExecutePreprocessor.timeout=1500
 done
@@ -184,6 +190,11 @@ robustness comparison.
 | `table_tau_vs_80rule.csv` | RQ3: cost saving vs the antecedent 80% rule |
 | `table_optimal_operating_points.csv` | RQ4: inclusion–risk operating points |
 | `table_market_scenarios.csv` | RQ4: emerging vs developed market policy |
+| `table_tau_directional.csv` | Directional FN/FP cost: τ\* under error-direction asymmetry |
+| `table_tau_fair_baseline.csv` | Cost-optimal vs 80% rule vs symmetric-cost optimum |
+| `table_rq2_within_regime.csv` | Within-regime within/between gaps (composition check) |
+| `table_scs_tail_density.csv` | SCS upper-tail density (threshold-saturation regime) |
+| `table_bootstrap_ci.csv` | Bootstrap 95% CIs for headline quantities |
 
 **Figures** (`results/figures/`, grayscale, 600 dpi, PNG + PDF)
 
@@ -209,8 +220,17 @@ cross-backend robustness.
 - **High-ρ saturation.** For high cost ratios the optimum lies in the sparse
   upper tail of the SCS distribution, where `e(·)` has already reached zero; the
   FOC is then satisfied trivially rather than at an interior crossing. This is a
-  property of the simulated score distribution, discussed in the manuscript's
-  Limitations.
+  property of the simulated score distribution.
+- **Directional cost model** (notebook 07). Beyond the single-cost objective,
+  misassignments are typed by direction — routing into a lower-risk vs a
+  higher-risk segment than the true one — and the threshold is re-optimised
+  under an FN/FP asymmetry, with segment risk proxied by classification
+  difficulty.
+- **Within-regime check** (notebook 07). The pooled between-store effect is
+  recomputed within each dominant-ratio regime. The effect attenuates and
+  reverses within a homogeneous regime, indicating it is a population-level
+  association driven by the prevalence of multi-store, category-diverse sellers
+  rather than a within-regime causal relationship — reported honestly as such.
 
 ---
 
