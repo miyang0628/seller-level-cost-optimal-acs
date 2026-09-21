@@ -11,9 +11,12 @@ segment assignment from the **store** to the **seller** (who may operate
 several stores), and it replaces the antecedent's arbitrary auto-assignment
 threshold with a **cost-minimising optimum**.
 
-> **Antecedent study.** Yang, M. (2026). *Explainable Seller Segment
-> Auto-Assignment for Alternative Credit Scoring.* Emerging Markets Finance and
-> Trade, 1–29. https://doi.org/10.1080/1540496X.2026.2726415
+> **Antecedent study.** This work directly continues a prior study that
+> introduced the *Explainable Seller Segmentation Framework* (ESSF) for
+> product-name-based segment auto-assignment in alternative credit scoring,
+> and reuses its publicly released dataset and Stage-1 classifier. The
+> antecedent reference is withheld here to preserve double-blind review and
+> will be restored on acceptance.
 
 ---
 
@@ -223,16 +226,18 @@ external validity against realised credit outcomes is left to future work.
 
 ## Citing
 
-If you use this code or these results, please cite the antecedent study:
+Full citation details for the antecedent study and this work are withheld to
+preserve **double-blind review**, and will be added on acceptance. Reviewers
+are referred to the anonymised antecedent as the *Explainable Seller
+Segmentation Framework* (ESSF).
 
 ```bibtex
-@article{yang2026essf,
-  author  = {Yang, Munil},
+@article{essf_anonymous,
+  author  = {Anonymous},
   title   = {Explainable Seller Segment Auto-Assignment for Alternative Credit Scoring},
-  journal = {Emerging Markets Finance and Trade},
+  journal = {[journal withheld for double-blind review]},
   year    = {2026},
-  pages   = {1--29},
-  doi     = {10.1080/1540496X.2026.2726415}
+  note    = {Antecedent study; full citation restored on acceptance}
 }
 ```
 
