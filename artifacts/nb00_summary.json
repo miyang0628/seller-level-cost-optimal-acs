@@ -1,0 +1,28 @@
+{
+  "n_classes": 11,
+  "train_size": 76996,
+  "test_size": 22011,
+  "main_backend": "tfidf_char_wb_2_5 + logreg",
+  "main_test_accuracy": 0.8639,
+  "main_test_macro_f1": 0.8636,
+  "plm_backends": {
+    "klue_roberta_base": {
+      "model": "klue/roberta-base",
+      "test_accuracy": 0.8728,
+      "test_macro_f1": 0.8723,
+      "train_minutes": 13.4
+    },
+    "klue_bert_base": {
+      "model": "klue/bert-base",
+      "test_accuracy": 0.863,
+      "test_macro_f1": 0.8628,
+      "train_minutes": 13.8
+    },
+    "koelectra_base": {
+      "model": "monologg/koelectra-base-v3-discriminator",
+      "test_accuracy": 0.8586,
+      "test_macro_f1": 0.8585,
+      "train_minutes": 13.0
+    }
+  }
+}

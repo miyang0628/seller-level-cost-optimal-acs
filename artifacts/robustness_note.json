@@ -1,0 +1,5 @@
+{
+  "transformers_available": false,
+  "status": "not_installed",
+  "detail": "No module named 'torch'"
+}
