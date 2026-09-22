@@ -74,7 +74,7 @@ financial — and this study resolves both.
 
 | RQ | Question | Result |
 |----|----------|--------|
-| **RQ1** | Does a seller-level SCS track assignment reliability, and does a distribution- or confidence-based within term track it more robustly? | Monotone score–reliability curve (0.59 → 1.00 across SCS ranges); distribution-based SCS is more robust across backends. |
+| **RQ1** | Does a seller-level SCS track assignment reliability, and does a distribution- or confidence-based within term track it more robustly? | Monotone score–reliability curve (0.59 → 1.00 across SCS ranges); distribution-based SCS is more robust across backends. The 71.7% pooled accuracy is *pre-routing*; among auto-assigned sellers post-threshold risk is 0–9.8% (90–100% accuracy), the rest escalated. |
 | **RQ2** | Is uncertainty dominated by within-store mixing or between-store disagreement? | **Between-store, at the population level.** Misassigned vs correct: `B_s` 0.686 vs 0.876; `H_btw` 0.637 vs 0.236. The gap is carried by seller composition, not a within-regime effect, and adds no predictive power beyond seller structure — the decomposition is **diagnostic, not incremental** (notebook 08). |
 | **RQ3** | What is the cost-optimal threshold τ\*, and how much does it save? | FOC `e(τ*) ≈ 1/ρ` holds at interior crossings; **28–95%** cost reduction vs the fixed 80% rule. |
 | **RQ4** | How does the inclusion–risk trade-off shift across markets? | *Illustrative scenario* (composition and ρ assumed, not estimated): emerging vs developed markets equalise risk (~2.6–2.8%) but differ **tenfold** in inclusion (7.7% vs 78.5%). |
