@@ -254,9 +254,10 @@ cross-backend robustness.
   real deployment should type errors by each segment's empirical default rate.
 - **Risk-proxy robustness** (notebook 08). The directional optimisation is
   repeated under three segment-risk orderings — difficulty, its reverse, and a
-  random permutation. The **direction** of the effect is invariant (a higher
-  FN penalty raises τ\* and drives auto-assigned FN errors toward zero under
-  every ordering), confirming it is a structural property of the optimisation
+  random permutation. The **direction** of the effect is invariant: a higher
+  FN penalty raises τ\* and drives the auto-assigned FN count to zero under
+  **every** ordering (0 under all three by ratio 10; only a few less-costly
+  auto-FP survive), confirming it is a structural property of the optimisation
   rather than a fact about credit risk. The **magnitudes** are proxy-dependent
   (total FN/FP swap: 257/151 difficulty, 151/257 reversed, 181/227 random), so
   the difficulty proxy fixes the interpretation, not the mechanism.
