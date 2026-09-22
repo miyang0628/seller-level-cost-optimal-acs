@@ -39,9 +39,15 @@ financial — and this study resolves both.
    ```
 
    A single-store seller has `B_s = 1` and reduces exactly to the antecedent
-   store-level score. Empirically, **misassigned sellers are distinguished
-   chiefly by low between-store agreement**, identifying cross-store
-   disagreement as the dominant source of unreliability.
+   store-level score. At the **population level**, misassigned sellers show
+   markedly lower between-store agreement — but this is an association carried
+   by the prevalence of multi-store, category-diverse sellers rather than a
+   within-regime causal effect, and the between-store term adds **no
+   incremental predictive power** for misassignment beyond simple seller
+   structure (regime, store count, within-store term). The decomposition is
+   therefore read as **descriptive and diagnostic** — it localises *why* an
+   assignment is unreliable and recovers the store-level score as a special
+   case — rather than as an incremental predictor.
 
 2. **Arbitrary τ → Cost-optimal τ\* (financial).** Routing is cast as a
    cost-sensitive decision. The expected cost of a threshold `τ` is
@@ -69,9 +75,9 @@ financial — and this study resolves both.
 | RQ | Question | Result |
 |----|----------|--------|
 | **RQ1** | Does a seller-level SCS track assignment reliability, and does a distribution- or confidence-based within term track it more robustly? | Monotone score–reliability curve (0.59 → 1.00 across SCS ranges); distribution-based SCS is more robust across backends. |
-| **RQ2** | Is uncertainty dominated by within-store mixing or between-store disagreement? | **Between-store.** Misassigned vs correct: `B_s` 0.686 vs 0.876; `H_btw` 0.637 vs 0.236. |
+| **RQ2** | Is uncertainty dominated by within-store mixing or between-store disagreement? | **Between-store, at the population level.** Misassigned vs correct: `B_s` 0.686 vs 0.876; `H_btw` 0.637 vs 0.236. The gap is carried by seller composition, not a within-regime effect, and adds no predictive power beyond seller structure — the decomposition is **diagnostic, not incremental** (notebook 08). |
 | **RQ3** | What is the cost-optimal threshold τ\*, and how much does it save? | FOC `e(τ*) ≈ 1/ρ` holds at interior crossings; **28–95%** cost reduction vs the fixed 80% rule. |
-| **RQ4** | How does the inclusion–risk trade-off shift across markets? | Emerging vs developed markets equalise risk (~2.6–2.8%) but differ **tenfold** in inclusion (7.7% vs 78.5%). |
+| **RQ4** | How does the inclusion–risk trade-off shift across markets? | *Illustrative scenario* (composition and ρ assumed, not estimated): emerging vs developed markets equalise risk (~2.6–2.8%) but differ **tenfold** in inclusion (7.7% vs 78.5%). |
 
 All findings are stable across four Stage-1 backends, indicating they are
 properties of the framework rather than of any one classifier.
@@ -83,7 +89,7 @@ properties of the framework rather than of any one classifier.
 ```
 .
 ├── data/                     # reused 110k Korean product-name corpus (train/val/test)
-├── notebooks/                # end-to-end pipeline, run in order 00 → 06
+├── notebooks/                # end-to-end pipeline, run in order 00 → 08
 │   ├── 00_data_prep_classifier.ipynb   # Stage-1 classifiers (TF-IDF + 3 PLMs)
 │   ├── 01_seller_simulation.ipynb      # synthesise sellers under controlled regimes
 │   ├── 02_seller_scs.ipynb             # seller-level SCS (distribution vs confidence)
@@ -91,7 +97,8 @@ properties of the framework rather than of any one classifier.
 │   ├── 04_inclusion_risk_tradeoff.ipynb# inclusion–risk frontier, market scenarios
 │   ├── 05_figures.ipynb                # all result figures (grayscale, 600 dpi)
 │   ├── 06_robustness.ipynb             # multi-backend RQ1 robustness
-│   └── 07_robustness_and_cost_extensions.ipynb  # directional cost, fair baselines, CIs
+│   ├── 07_robustness_and_cost_extensions.ipynb  # directional cost, fair baselines, CIs
+│   └── 08_incremental_value_and_proxy_robustness.ipynb  # B_s incremental value; risk-proxy stress test
 ├── results/
 │   ├── tables/               # all derived result tables (.csv)
 │   └── figures/              # result figures (.png and .pdf)
@@ -137,13 +144,14 @@ Notebook `00` was run on a single NVIDIA RTX 4060 Ti; each base PLM trains in
 ## Reproducing the results
 
 Run the notebooks in order from the `notebooks/` directory. Only `00` needs a
-GPU; `01`–`06` run on CPU in a few minutes.
+GPU; `01`–`08` run on CPU in a few minutes.
 
 ```bash
 cd notebooks
 for nb in 00_data_prep_classifier 01_seller_simulation 02_seller_scs \
           03_tau_optimization 04_inclusion_risk_tradeoff 05_figures \
-          06_robustness 07_robustness_and_cost_extensions; do
+          06_robustness 07_robustness_and_cost_extensions \
+          08_incremental_value_and_proxy_robustness; do
   jupyter nbconvert --to notebook --execute --inplace ${nb}.ipynb \
           --ExecutePreprocessor.timeout=1500
 done
@@ -157,7 +165,7 @@ models — `klue/roberta-base`, `klue/bert-base`, and
 Macro-F1: 0.872 (RoBERTa-base), 0.864 (TF-IDF+LR), 0.863 (BERT-base),
 0.859 (KoELECTRA), reproducing the antecedent ordering.
 
-**Choosing the main backend.** Notebooks `01`–`05` read
+**Choosing the main backend.** Notebooks `01`–`05`, `07`, and `08` read
 `artifacts/test_predictions.csv` as the main backend. To make
 `klue/roberta-base` the main backend (as in the manuscript), copy its
 predictions over the defaults before running `01`:
@@ -184,16 +192,18 @@ robustness comparison.
 | `table_scs_assignment_correlation.csv` | RQ1: correlation of each SCS variant with assignment correctness |
 | `table_robustness_backends.csv` / `..._binlevel.csv` | RQ1: cross-backend robustness |
 | `table_within_between_diagnosis.csv` | RQ2: within/between components for correct vs misassigned |
+| `table_rq2_within_regime.csv` | RQ2: within-regime within/between gaps (composition check) |
+| `table_bs_incremental_value.csv` | RQ2: incremental predictive value of `B_s` (nested-feature CV AUC) |
+| `table_bs_within_regime_incremental.csv` | RQ2: within-regime incremental AUC of `B_s` over seller structure |
 | `table_tau_star_by_rho.csv` | RQ3: cost-optimal τ\* by cost ratio |
 | `table_tau_foc_check.csv` | RQ3: first-order condition check |
 | `table_tau_asymmetric.csv` | RQ3: τ\* under FN/FP cost asymmetry |
-| `table_tau_vs_80rule.csv` | RQ3: cost saving vs the antecedent 80% rule |
+| `table_tau_directional.csv` | RQ3: directional FN/FP cost — τ\* under error-direction asymmetry |
+| `table_risk_proxy_robustness.csv` | RQ3: directional result under difficulty / reversed / random risk orderings |
+| `table_tau_vs_80rule.csv` / `table_tau_fair_baseline.csv` | RQ3: cost saving vs the 80% rule and vs a symmetric-cost optimum |
+| `table_scs_tail_density.csv` | RQ3: SCS upper-tail density (threshold-saturation regime) |
 | `table_optimal_operating_points.csv` | RQ4: inclusion–risk operating points |
-| `table_market_scenarios.csv` | RQ4: emerging vs developed market policy |
-| `table_tau_directional.csv` | Directional FN/FP cost: τ\* under error-direction asymmetry |
-| `table_tau_fair_baseline.csv` | Cost-optimal vs 80% rule vs symmetric-cost optimum |
-| `table_rq2_within_regime.csv` | Within-regime within/between gaps (composition check) |
-| `table_scs_tail_density.csv` | SCS upper-tail density (threshold-saturation regime) |
+| `table_market_scenarios.csv` | RQ4: emerging vs developed market policy (illustrative) |
 | `table_bootstrap_ci.csv` | Bootstrap 95% CIs for headline quantities |
 
 **Figures** (`results/figures/`, grayscale, 600 dpi, PNG + PDF)
@@ -221,16 +231,35 @@ cross-backend robustness.
   upper tail of the SCS distribution, where `e(·)` has already reached zero; the
   FOC is then satisfied trivially rather than at an interior crossing. This is a
   property of the simulated score distribution.
-- **Directional cost model** (notebook 07). Beyond the single-cost objective,
-  misassignments are typed by direction — routing into a lower-risk vs a
-  higher-risk segment than the true one — and the threshold is re-optimised
-  under an FN/FP asymmetry, with segment risk proxied by classification
-  difficulty.
 - **Within-regime check** (notebook 07). The pooled between-store effect is
   recomputed within each dominant-ratio regime. The effect attenuates and
   reverses within a homogeneous regime, indicating it is a population-level
   association driven by the prevalence of multi-store, category-diverse sellers
   rather than a within-regime causal relationship — reported honestly as such.
+- **Incremental value of `B_s`** (notebook 08). A logistic model predicting
+  misassignment is fit over nested feature sets and compared by 5-fold CV AUC.
+  Regime alone already recovers most of the signal (AUC 0.928); adding store
+  count (0.952) and the within-store term (0.962) accounts for the rest.
+  **Adding `B_s` to this structural baseline does not raise AUC** (0.962 →
+  0.962, change ≈ 0.0001, well within the 0.007 CV standard deviation), and the
+  same holds within each regime (`ΔAUC` = +0.004 cross, −0.002 diversified).
+  `B_s` alone is predictive (AUC 0.714) only as a re-expression of seller
+  structure (`B_s = 1` for single-store sellers, falling mechanically with
+  store count). The decomposition is thus **diagnostic, not incremental**.
+- **Directional cost model** (notebook 07). Beyond the single-cost objective,
+  misassignments are typed by direction — routing into a lower-risk vs a
+  higher-risk segment than the true one — and the threshold is re-optimised
+  under an FN/FP asymmetry. Segment risk is **proxied by classification
+  difficulty**, a strong modelling assumption (difficulty ≠ credit risk); a
+  real deployment should type errors by each segment's empirical default rate.
+- **Risk-proxy robustness** (notebook 08). The directional optimisation is
+  repeated under three segment-risk orderings — difficulty, its reverse, and a
+  random permutation. The **direction** of the effect is invariant (a higher
+  FN penalty raises τ\* and drives auto-assigned FN errors toward zero under
+  every ordering), confirming it is a structural property of the optimisation
+  rather than a fact about credit risk. The **magnitudes** are proxy-dependent
+  (total FN/FP swap: 257/151 difficulty, 151/257 reversed, 181/227 random), so
+  the difficulty proxy fixes the interpretation, not the mechanism.
 
 ---
 
@@ -238,9 +267,14 @@ cross-backend robustness.
 
 Seller structure is **simulated**, not observed: public data linking multiple
 stores to one owner are not available. Cost parameters (`ρ`, FN/FP asymmetry)
-are **illustrative**, swept over ranges rather than calibrated to a specific
-institution. The SCS–misassignment relationship is a simulation product; its
-external validity against realised credit outcomes is left to future work.
+and the emerging-vs-developed **market contrast** are **illustrative** —
+swept or hand-set rather than calibrated to a specific institution or
+estimated from market data. The between-store term is a **diagnostic** marker,
+not an incremental predictor of misassignment over observed seller structure,
+and the FN/FP direction rests on a **classification-difficulty proxy** for
+segment risk (validated for direction, not magnitude). The SCS–misassignment
+relationship is a simulation product; its external validity against realised
+credit outcomes is left to future work.
 
 ---
 
